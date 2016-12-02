@@ -1,5 +1,6 @@
 {
     "name": "marketflow/settings-manager",
+    "description": "Manage settings that can have multiple levels",
     "license": "MIT",
     "authors": [
         {
@@ -7,5 +8,10 @@
             "email": "joey_claessen@hotmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "MarketFlow\\SettingsManager\\": ["src/"]
+        }
+    }
 }
