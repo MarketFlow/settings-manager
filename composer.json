@@ -1,0 +1,11 @@
+{
+    "name": "marketflow/settings-manager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joey Claessen",
+            "email": "joey_claessen@hotmail.com"
+        }
+    ],
+    "require": {}
+}
