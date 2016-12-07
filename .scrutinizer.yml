@@ -12,3 +12,5 @@ build:
     environment:
         php:
             version: 7.0.7
+        phpunit:
+            version: 5.7.2
