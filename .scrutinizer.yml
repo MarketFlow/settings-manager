@@ -16,6 +16,10 @@ build:
                 coverage:
                     file: 'coverage-file'
                     format: 'php-clover'
+    dependencies:
+        before:
+            - 'wget https://phar.io/releases/phive.phar'
+            - 'php phive.phar install --trust-gpg-keys 4AA394086372C20A'
     environment:
         php:
             version: 7.0.7
