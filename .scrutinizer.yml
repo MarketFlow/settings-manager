@@ -18,7 +18,7 @@ build:
                     format: 'php-clover'
     environment:
         php:
-            version: 7.0
+            version: 7.0.7
 tools:
     php_sim: false
     php_cpd: false
