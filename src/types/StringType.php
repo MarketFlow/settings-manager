@@ -6,17 +6,17 @@ use MarketFlow\SettingsManager\interfaces\TypeInterface;
 
 class StringType implements TypeInterface
 {
-    public function merge($values)
+    public function merge(array $values)
     {
-        return isset($values[0]) ? $values[0] : null;
+        return $values[0];
     }
 
-    public function serialize($value)
+    public function serialize($value) : string
     {
         return $value;
     }
 
-    public function validate($value)
+    public function validate($value) : bool
     {
         return is_string($value);
     }

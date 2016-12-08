@@ -4,11 +4,11 @@ namespace MarketFlow\SettingsManager\interfaces;
 
 interface TypeInterface
 {
-    public function merge($values);
+    public function merge(array $values);
 
-    public function serialize($value);
+    public function serialize($value): string;
 
-    public function validate($value);
+    public function validate($value): bool;
 
     public function unserialize($value);
 }

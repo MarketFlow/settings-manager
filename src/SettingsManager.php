@@ -45,27 +45,29 @@ class SettingsManager
         $result = [];
         $setting = $this->getType($key);
 
-        if (isset($userContext)) {
-            $value = $setting->unserialize($this->storage->getUserSetting($userContext->getSettingId(), $this->userKey($key, $userContext)));
-            if (isset($value)) {
-                $result[] = $value;
-            }
+        if (
+            isset($userContext)
+            && null !== $serialized = $this->storage->getUserSetting($userContext->getSettingId(), $this->userKey($key, $userContext))
+        ) {
+            $result[] = $setting->unserialize($serialized);
         }
 
         while (isset($context)) {
-            $value = $setting->unserialize($this->storage->getSetting($this->contextKey($key, $context)));
-            if (isset($value)) {
-                $result[] = $value;
+            if (null !== $serialized = $this->storage->getSetting($this->contextKey($key, $context))) {
+                $result[] = $setting->unserialize($serialized);
             }
             $context = $context->getSettingParent();
         }
 
-        $value = $setting->unserialize($this->storage->getApplicationSetting($key));
-        if (isset($value)) {
-            $result[] = $value;
+        if (
+            null !== $serialized = $this->storage->getApplicationSetting($key)
+        ) {
+            $result[] = $setting->unserialize($serialized);
         }
 
-        return $setting->merge($result);
+        return empty($result)
+            ? null
+            : ((count($result) > 1) ? $setting->merge($result) : $result[0]);
     }
 
     /**
