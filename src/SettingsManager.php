@@ -3,6 +3,7 @@
 namespace MarketFlow\SettingsManager;
 
 use Exception;
+use MarketFlow\SettingsManager\interfaces\SettingChainedInterface;
 use MarketFlow\SettingsManager\interfaces\SettingInterface;
 use MarketFlow\SettingsManager\interfaces\StorageInterface;
 use MarketFlow\SettingsManager\interfaces\TypeInterface;
@@ -39,22 +40,30 @@ class SettingsManager
      * @return mixed
      * @throws Exception
      */
-    public function get($key, SettingInterface $context = null, SettingInterface $userContext = null)
+    public function get($key, SettingChainedInterface $context = null, SettingInterface $userContext = null)
     {
         $result = [];
         $setting = $this->getType($key);
 
-        while (isset($userContext)) {
-            $result[] = $setting->unserialize($this->storage->getUserSetting($this->userKey($key, $userContext)));
-            $userContext = $userContext->getSettingParent();
+        if (isset($userContext)) {
+            $value = $setting->unserialize($this->storage->getUserSetting($userContext->getSettingId(), $this->userKey($key, $userContext)));
+            if (isset($value)) {
+                $result[] = $value;
+            }
         }
 
         while (isset($context)) {
-            $result[] = $setting->unserialize($this->storage->getSetting($this->contextKey($key, $context)));
+            $value = $setting->unserialize($this->storage->getSetting($this->contextKey($key, $context)));
+            if (isset($value)) {
+                $result[] = $value;
+            }
             $context = $context->getSettingParent();
         }
 
-        $result[] = $setting->unserialize($this->storage->getApplicationSetting($key));
+        $value = $setting->unserialize($this->storage->getApplicationSetting($key));
+        if (isset($value)) {
+            $result[] = $value;
+        }
 
         return $setting->merge($result);
     }
@@ -104,7 +113,7 @@ class SettingsManager
      * @param $value
      * @throws Exception
      */
-    public function setContextSetting(SettingInterface $context, $key, $value)
+    public function setContextSetting(SettingChainedInterface $context, $key, $value)
     {
         $setting = $this->getType($key);
 
@@ -130,6 +139,7 @@ class SettingsManager
 
         if ($setting->validate($value)) {
             $this->storage->setUserSetting(
+                $userContext->getSettingId(),
                 $this->userKey($key, $userContext),
                 $setting->serialize($value)
             );
@@ -152,7 +162,7 @@ class SettingsManager
      * @param SettingInterface $context
      * @return string
      */
-    private function contextKey($key, SettingInterface $context) {
+    private function contextKey($key, SettingChainedInterface $context) {
         return $key . $this->separator . $context->getSettingId();
     }
 }

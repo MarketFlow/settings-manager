@@ -12,7 +12,7 @@ interface StorageInterface
 
     public function setApplicationSetting($key, $value);
 
-    public function getUserSetting($key);
+    public function getUserSetting($userId, $key);
 
-    public function setUserSetting($key, $value);
+    public function setUserSetting($userId, $key, $value);
 }

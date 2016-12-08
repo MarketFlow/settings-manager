@@ -2,6 +2,7 @@
 
 namespace MarketFlow\SettingsManager\tests;
 
+use MarketFlow\SettingsManager\interfaces\SettingChainedInterface;
 use UnexpectedValueException;
 use MarketFlow\SettingsManager\interfaces\SettingInterface;
 use MarketFlow\SettingsManager\interfaces\StorageInterface;
@@ -227,12 +228,12 @@ class SettingsManagerTest extends \PHPUnit_Framework_TestCase
         $storage
             ->expects($this->once())
             ->method('setUserSetting')
-            ->with($this->isType('string'), $serializedValue)
+            ->with($this->isType('string'), $this->isType('string'), $serializedValue)
         ;
 
         $context = $this->createContextMock();
         $context
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getSettingId')
         ;
 
@@ -333,9 +334,21 @@ class SettingsManagerTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function createContextMock()
+    private function createUserContextMock()
     {
         $mock = $this->createMock(SettingInterface::class);
+
+        $mock
+            ->method('getSettingId')
+            ->willReturn('setting_1')
+        ;
+
+        return $mock;
+    }
+
+    private function createContextMock()
+    {
+        $mock = $this->createMock(SettingChainedInterface::class);
 
         $mock
             ->method('getSettingId')
